@@ -1,5 +1,5 @@
 # City-Scale epidemic simulator
-
+This is the updated version of https://github.com/cni-iisc/epidemic-simulator
 This repository houses the source code of the city-scale epidemic simulator developed by a team of researchers of IISc Bangalore, and TIFR Mumbai, developed to model the spread of CovID-19 in Indian demographics. This README document will help you familiarize yourself with the directory structure of the project and also provides the steps to run the simulator on your local machines. 
 
 The source code for the simulator is organized into three major directories each of which represent one stage of the simulator's workflow.
@@ -64,6 +64,17 @@ These subfolders in simulator contains:  1) the main calibration script (tune_mo
 ## `cpp-simulator/` - CPP simulator
 This folder contains the cpp-version of the simulator. The CPP simulator evolved from the JS simulator. 
 Please read the  [`cpp-simulator/README.md`](cpp-simulator/README.md) for more details.
+
+## Simulation v2 Enhancements
+Key updates in the new simulation focus on enhancing realism, data granularity, and user experience.
+
+Surveillance Modeling: A significant new feature is the ability to model the difference between actual infections and what is officially reported. This is controlled by a new CASE_INFECTION_RATIO parameter, which specifies the fraction of infections that are detected by the surveillance system. This results in a new, dedicated plot for "Reported Cases".
+
+Granular Data Tracking: The simulation's data collection is now more detailed. It tracks the flow of individuals between states using new daily and cumulative counters for events like DAILY_NEW_EXPOSED, DAILY_NEW_SYMPTOMATIC, DAILY_NEW_DEATHS, and DAILY_NEW_HOSPITALISED. This provides richer data for both plotting and offline analysis.
+
+Enhanced Plotting and UI: The user interface has been upgraded with toggle switches on all plots, allowing users to instantly change the view between daily and cumulative data.
+
+Improved Performance: To enhance stability, the new version includes a clearSimulationMemory() function that purges large data arrays and properly clears plots between consecutive runs, preventing browser slowdown.
 
 ## Copyright and License
 Copyright [2020] [Indian Institute of Science, Bangalore & Tata Institute of Fundamental Research, Mumbai]
