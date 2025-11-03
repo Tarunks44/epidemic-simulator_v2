@@ -518,6 +518,10 @@ struct global_params{
   count_type num_detected_cases = 0;
   double case_infection_ratio = 0.8; // Default value like in JS
 
+  // Wastewater surveillance
+  bool ENABLE_WASTEWATER_SURVEILLANCE = false;
+  double WASTEWATER_SAMPLING_FREQUENCY = 3.0;  // Samples per week
+  int WASTEWATER_NUM_SEWERSHEDS = 20;           // Number of sewershed catchments
 
 };
 

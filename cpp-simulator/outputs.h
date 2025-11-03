@@ -3,6 +3,7 @@
 #ifndef OUTPUTS_H_
 #define OUTPUTS_H_
 #include "models.h"
+#include "wastewater.h"
 #include <iostream>
 #include <fstream>
 #include <map>

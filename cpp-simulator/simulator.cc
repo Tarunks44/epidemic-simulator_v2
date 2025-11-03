@@ -11,6 +11,7 @@
 #include "simulator.h"
 #include "testing.h"
 #include "cohorts.h"
+#include "wastewater.h"
 
 using std::string;
 using std::vector;
@@ -65,6 +66,18 @@ plot_data_struct run_simulation()
 	bool coaches_created = false;
 	std::unordered_map<count_type, std::vector<train_coach>> train_coaches_am;
 	std::unordered_map<count_type, std::vector<train_coach>> train_coaches_pm;
+
+	// Initialize wastewater surveillance
+	vector<sewershed> sewersheds;
+	vector<wastewater_sample> wastewater_samples;
+	wastewater_config ww_config;
+	ww_config.wastewater_enabled = GLOBAL.ENABLE_WASTEWATER_SURVEILLANCE;
+	ww_config.shedding_params = viral_shedding_params(); // Use defaults from struct
+
+	if (GLOBAL.ENABLE_WASTEWATER_SURVEILLANCE) {
+		initialize_sewersheds(sewersheds, homes, communities, ww_config);
+		std::cout << "Wastewater surveillance enabled with " << sewersheds.size() << " sewersheds\n";
+	}
 
 	auto community_dist_matrix = compute_community_distances(communities);
 	auto community_fk_matrix = compute_community_distances_fkernel(community_dist_matrix);
@@ -297,6 +310,21 @@ plot_data_struct run_simulation()
 
 			 // Reset daily counters at the start of each day
 			 reset_daily_counters();
+
+			 // Update wastewater surveillance once per day
+			 if (GLOBAL.ENABLE_WASTEWATER_SURVEILLANCE) {
+				 update_wastewater_surveillance(sewersheds, nodes, homes, time_step, ww_config);
+
+				 // Collect samples (respects sampling frequency)
+				 int current_day = time_step / GLOBAL.SIM_STEPS_PER_DAY;
+				 for (auto& ss : sewersheds) {
+					 if (should_collect_sample(ss, current_day)) {
+						 wastewater_sample sample = generate_sample_record(ss, current_day, nodes, homes);
+						 wastewater_samples.push_back(sample);
+						 ss.last_sample_day = current_day;
+					 }
+				 }
+			 }
 		}
 
 		//#pragma omp parallel for
@@ -773,6 +801,14 @@ plot_data_struct run_simulation()
 	end_time = std::chrono::high_resolution_clock::now();
 	cerr << "simulator: simulation time (ms): " << duration(start_time, end_time) << "\n";
 #endif
+
+	// Output wastewater surveillance data
+	if (GLOBAL.ENABLE_WASTEWATER_SURVEILLANCE && !wastewater_samples.empty()) {
+		string ww_output_file = GLOBAL.output_path + "/wastewater_surveillance.csv";
+		output_wastewater_samples(ww_output_file, wastewater_samples);
+		std::cout << "Wrote " << wastewater_samples.size() << " wastewater samples to "
+				  << ww_output_file << "\n";
+	}
 
 	return plot_data;
 }
