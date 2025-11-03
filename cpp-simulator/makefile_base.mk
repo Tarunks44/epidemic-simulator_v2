@@ -24,10 +24,10 @@ endif
 ifeq ($(enable_proto), yes)
 #set proto flags
 LDLIBS = -lprotobuf
-obj = cohorts.o train_loader.o agents_store.pb.o initializers.o models.o interventions.o intervention_primitives.o updates.o simulator.o testing.o outputs.o drive_simulator.o
+obj = cohorts.o train_loader.o agents_store.pb.o initializers.o models.o interventions.o intervention_primitives.o updates.o simulator.o testing.o outputs.o wastewater.o drive_simulator.o
 else
 LDLIBS =
-obj = cohorts.o train_loader.o initializers.o models.o interventions.o intervention_primitives.o updates.o simulator.o testing.o outputs.o drive_simulator.o
+obj = cohorts.o train_loader.o initializers.o models.o interventions.o intervention_primitives.o updates.o simulator.o testing.o outputs.o wastewater.o drive_simulator.o
 endif
 
 

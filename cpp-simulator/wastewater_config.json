@@ -1,0 +1,77 @@
+{
+  "_comment": "Wastewater Surveillance Configuration",
+  "_description": "Configuration for wastewater-based epidemic surveillance with three key features: RNA load, detected cases by area, and detection ratio estimation",
+
+  "wastewater_enabled": true,
+
+  "sewershed_configuration": {
+    "num_sewersheds": 20,
+    "wards_per_sewershed": 10,
+    "_comment": "Sewersheds are created by grouping wards. Adjust based on your city's infrastructure"
+  },
+
+  "sampling_parameters": {
+    "default_sampling_frequency_per_week": 3.0,
+    "_comment": "3 samples per week is typical for surveillance (Mon, Wed, Fri)",
+    "collection_efficiency": 0.85,
+    "_comment": "Fraction of sewage successfully collected (0.7-0.95)",
+    "dilution_factor": 1.0,
+    "_comment": "Seasonal dilution due to rainfall. 1.0 = dry season, >1.0 = wet season",
+    "liters_per_person_per_day": 175.0,
+    "_comment": "Domestic wastewater generation rate"
+  },
+
+  "viral_shedding_model": {
+    "peak_shedding_day": 6.0,
+    "_comment": "Days after infection when viral shedding peaks (typically 5-7 days)",
+
+    "peak_shedding_rate_copies_per_day": 1e9,
+    "_comment": "Peak viral RNA copies shed per person per day (1 billion copies)",
+
+    "shedding_curve_sigma": 3.0,
+    "_comment": "Standard deviation controlling width of shedding curve",
+
+    "shedding_duration_days": 30.0,
+    "_comment": "Total days of viral shedding (longer than infectiousness period)",
+
+    "asymptomatic_shedding_fraction": 0.6,
+    "_comment": "Asymptomatic cases shed 60% of symptomatic levels",
+
+    "shedding_start_day": 1.0,
+    "_comment": "Shedding begins during late exposed phase",
+
+    "detection_limit_copies_per_L": 1000.0,
+    "_comment": "Minimum detectable RNA concentration in wastewater (lab-dependent)"
+  },
+
+  "detection_ratio_estimation": {
+    "viral_load_to_infection_factor": 1e-6,
+    "_comment": "Calibration factor: converts viral concentration (copies/L) to estimated infections per 100k. Requires calibration with local data",
+
+    "minimum_infections_for_detection": 5,
+    "_comment": "Minimum active infections needed for reliable wastewater signal",
+
+    "wastewater_lead_time_days": 5,
+    "_comment": "Wastewater detects outbreaks 4-7 days before clinical symptoms appear"
+  },
+
+  "output_configuration": {
+    "output_all_sewersheds": true,
+    "output_aggregated_city_level": true,
+    "generate_plots": true
+  },
+
+  "notes": {
+    "feature_1_rna_load": "Calculates total viral load (copies) and concentration (copies/L) in wastewater for each sewershed",
+    "feature_2_detected_cases": "Aggregates clinical surveillance data (detected cases, hospitalizations, deaths) by sewershed area",
+    "feature_3_detection_ratio": "Estimates true infections from wastewater signal and calculates detection_ratio = detected/true to quantify underreporting",
+
+    "calibration_notes": "The viral_load_to_infection_factor should be calibrated using historical data where both wastewater measurements and case counts are available. Typical range: 1e-7 to 1e-5",
+
+    "interpretation": {
+      "detection_ratio_0.8": "80% of infections are detected by clinical surveillance (good coverage)",
+      "detection_ratio_0.3": "30% detection means 70% of infections are missed",
+      "underreporting_factor_3.0": "For every 1 detected case, there are 3 true infections"
+    }
+  }
+}
